@@ -1,9 +1,13 @@
 import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Dimensions, ToastAndroid } from 'react-native'
 import React, { useMemo, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPlayerData } from '../redux/slices/playerSlice';
 
 export default function AddPlayer({ navigation }: { navigation: any }) {
-    const [value, setValue] = useState('');
+    
+    const dispatch=useDispatch()
+    const {playerData,editPlayer}= useSelector(state=>state.playerState)
 
     const[data,setData]=useState({
         id:'',
@@ -26,14 +30,12 @@ export default function AddPlayer({ navigation }: { navigation: any }) {
         try {
             const existingData = await AsyncStorage.getItem('myData');
             const parsedData = existingData ? JSON.parse(existingData) : [];
-// console.log('before-',parsedData)
-    
-
             parsedData.push(value);
-// console.log('after-',parsedData)
 
             await AsyncStorage.setItem('myData', JSON.stringify(parsedData));
+            dispatch(setPlayerData(parsedData))
             ToastAndroid.show('Information saved',ToastAndroid.TOP)
+
         navigation.navigate('Home')
         } catch (e) {
           // saving error
@@ -45,20 +47,21 @@ export default function AddPlayer({ navigation }: { navigation: any }) {
         const existingData = await AsyncStorage.getItem('myData');
         const parsedData = existingData ? JSON.parse(existingData) : [];
 
-        if(parsedData)
-        parsedData.map((it)=>{
+        
+   
+        if(!id || !name || !country || !score)
+        ToastAndroid.show('all field required',ToastAndroid.TOP)
+    else{
+       let exist=false
+        parsedData.forEach((it)=>{
             if(it.id==id){
         ToastAndroid.show('ID already exists',ToastAndroid.TOP)
-        return
+        exist=true
             }
 
         })
-   
-       else if(!id || !name || !country || !score)
-        ToastAndroid.show('all field required',ToastAndroid.TOP)
-  
-    else{
-      
+
+        if(!exist)
         storeData(data)
         
     }
@@ -69,7 +72,7 @@ export default function AddPlayer({ navigation }: { navigation: any }) {
         <ScrollView style={ styles.container}>
 
             <Text style={styles.heading}>
-                Create your PopX account
+                Create Player
             </Text>
 
 
@@ -79,7 +82,7 @@ export default function AddPlayer({ navigation }: { navigation: any }) {
                     <Text style={{ color: '#DD4A3D' }}>*</Text>
                 </View>
 
-                <TextInput style={styles.textinputStyle} onChangeText={(text)=>setData({...data,id:text})}></TextInput>
+                <TextInput style={styles.textinputStyle} autoCapitalize='characters'  inputMode='numeric' onChangeText={(text)=>setData({...data,id:text})}></TextInput>
             </View>
 
 
@@ -89,8 +92,8 @@ export default function AddPlayer({ navigation }: { navigation: any }) {
                     <Text style={{ color: '#DD4A3D' }}>*</Text>
                 </View>
 
-                <TextInput style={[styles.textinputStyle,{textTransform:'uppercase'}]} maxLength={15}
-                onChangeText={(text)=>setData({...data,name:text})}></TextInput>
+                <TextInput style={[styles.textinputStyle,]} autoCapitalize='characters' maxLength={15}
+                onChangeText={(text)=>setData({...data,name:text.toUpperCase()})}></TextInput>
             </View>
 
             <View style={styles.textinputbox}>
@@ -99,7 +102,7 @@ export default function AddPlayer({ navigation }: { navigation: any }) {
                     <Text style={{ color: '#DD4A3D' }}>*</Text>
                 </View>
 
-                <TextInput onChangeText={(text)=>setData({...data,country:text})} placeholder="Ex-'IN'" style={[styles.textinputStyle,{textTransform:'uppercase'}]} maxLength={2}></TextInput>
+                <TextInput onChangeText={(text)=>setData({...data,country:text.toUpperCase()})} autoCapitalize='characters' placeholder="Ex- IN" style={[styles.textinputStyle,{textTransform:'uppercase'}]} maxLength={2}></TextInput>
             </View>
 
             <View style={styles.textinputbox}>
@@ -108,7 +111,7 @@ export default function AddPlayer({ navigation }: { navigation: any }) {
                     <Text style={{ color: '#DD4A3D' }}>*</Text>
                 </View>
 
-                <TextInput style={styles.textinputStyle} inputMode='numeric' onChangeText={(text)=>setData({...data,score:text})}></TextInput>
+                <TextInput style={styles.textinputStyle} inputMode='decimal' onChangeText={(text)=>setData({...data,score:text})}></TextInput>
             </View>
 
 

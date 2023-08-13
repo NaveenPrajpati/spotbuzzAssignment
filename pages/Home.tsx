@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View,Image,TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View,Image,TouchableOpacity,FlatList,Alert} from 'react-native'
 import React, { useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPlayerData } from '../redux/slices/playerSlice';
+import { setEditPlayer, setPlayerData } from '../redux/slices/playerSlice';
 import Navbar from '../components/Navbar';
+import EditPlayer from './EditPlayer';
 
 
 export default function Home({navigation}) {
@@ -29,33 +30,79 @@ export default function Home({navigation}) {
 
   },[])
 
+ async function handleDelete(id){
+    const jsonValue = await AsyncStorage.getItem('myData');
+    const data= jsonValue != null ? JSON.parse(jsonValue) : null;
+    const filt=data.filter(it=>it.id!==id)
+    Alert.alert(
+      'Confirmation',
+      'Are you sure, you want to delete this player',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+      },
+      {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async() => {
+            await AsyncStorage.setItem('myData',JSON.stringify(filt))
+            dispatch(setPlayerData(filt))
+          },
+      },
+      ],
+     
+    )
+   
+  }
+
   return (
     <View style={styles.container}>
-      <Navbar/>
-      <View style={{marginTop:10,flexDirection:'row',gap:20}}>
-        <View  style={{position:'relative'}}>
-
-        <Image source={require('../assets/images/profilepic.png')} alt='no' width={76} height={76}  />
-        <Image source={require('../assets/images/picprofile.png')} alt='no' width={21} height={23} style={{position:'absolute',right:-3,bottom:4}} />
-        
-        </View>
-        <View>
-            <Text style={styles.nameStyle}>name</Text>
-            <Text style={styles.mailStyle}>name@gmail.com</Text>
-     
-        </View>
-      </View>
       <TouchableOpacity style={[styles.buttonstyle]} onPress={() => navigation.navigate('AddPlayer')}>
-                <Text style={styles.buttontextstyle}>Login</Text>
+                <Text style={styles.buttontextstyle}>Add Player</Text>
 
             </TouchableOpacity>
+      <View style={{marginTop:10,}}>
+    {playerData.length>0?
+        <FlatList
+        data={playerData}
+        renderItem={({item,index})=>(
+          <View key={index} style={{backgroundColor:'white',marginVertical:4,padding:5}}>
+          <Text style={{color:'black'}}>Id- {item?.id}</Text>
+          <Text>{item?.name}</Text>
+          <Text>{item?.country}</Text>
+          <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+
+          <Text>{item?.score}</Text>
+          <View style={{flexDirection:'row',gap:10}}>
+            <TouchableOpacity onPress={()=>{
+              dispatch(setEditPlayer(item))
+              navigation.navigate('EditPlayer')
+            }}>
+            <Text>edit</Text>
+            </TouchableOpacity >
+
+            <TouchableOpacity onPress={()=>handleDelete(item.id)}>
+            <Text>delete</Text>
+
+            </TouchableOpacity>
+          </View>
+          </View>
+          
+          </View>
+        )}
+        />:
+        <Text style={{color:'black'}}>Add player to list</Text>}
+     
+      </View>
+     
     </View>
   )
 }
 
 const styles = StyleSheet.create({
     container:{
-        flex:1,padding:20,backgroundColor:'#F7F8F9'
+        flex:1,padding:10,backgroundColor:'#F7F8F9'
     },
     nameStyle:{
         fontSize:15,fontFamily:'Rubik-Medium',textTransform:'capitalize',color:'black',lineHeight:19

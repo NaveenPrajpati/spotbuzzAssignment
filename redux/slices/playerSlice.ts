@@ -28,7 +28,8 @@ export interface CounterState {
   //   country:string
   //   score:string
   // }
-  playerData:Array<{}>
+  playerData:Array<{}>,
+  editPlayer:{}
 }
 
 const initialState: CounterState = {
@@ -48,25 +49,17 @@ export const playerSlice = createSlice({
       state.playerData.push(action.payload)
     },
     setPlayerData: (state, action: PayloadAction<[]>) => {
+     
       state.playerData = action.payload
     },
+    setEditPlayer:(state,action)=>{
+      state.editPlayer=action.payload
+    }
   },
-  extraReducers: (builder) => {
-    builder.addCase(storeData.fulfilled, (state, { payload }) => {
-      state.playerData.push(payload)
-    })
-    builder.addCase(storeData.rejected, (state, action) => {
-      if (action.payload) {
-        // Since we passed in `MyKnownError` to `rejectValue` in `updateUser`, the type information will be available here.
-        state.error = action.payload.errorMessage
-      } else {
-        state.error = action.error
-      }
-    })
-  },
+ 
 })
 
 // Action creators are generated for each case reducer function
-export const {  addPlayer, setPlayerData } = playerSlice.actions
+export const {  addPlayer, setPlayerData, setEditPlayer } = playerSlice.actions
 
 export default playerSlice.reducer
