@@ -1,24 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const storeData = createAsyncThunk(
-  'storing data',
-  // Declare the type your function argument here:
-  // async (userId: number) => {
-  //   const response = await fetch(`https://reqres.in/api/users/${userId}`)
-  //   // Inferred return type: Promise<MyData>
-  //   return (await response.json()) 
-
-  // }
-   async (value) => {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem('my-key', jsonValue);
-  }
-
-  
-)
 
 export interface CounterState {
   value: number
@@ -29,22 +12,22 @@ export interface CounterState {
   //   score:string
   // }
   playerData:Array<{}>,
-  editPlayer:{}
+  editPlayer:{},
+  sortOrder:string
 }
 
 const initialState: CounterState = {
-  value:0,
-  playerData:[]
+  value: 0,
+  playerData: [],
+  editPlayer: {},
+  sortOrder:'id'
 }
 
 export const playerSlice = createSlice({
   name: 'playerdata',
   initialState,
   reducers: {
-    deletePlayer: (state,action: PayloadAction<string>) => {
-      const data=state.playerData.filter(it=>it.id!=action.payload)
-      state.playerData=data
-    },
+  
     addPlayer: (state,action: PayloadAction<{}>) => {
       state.playerData.push(action.payload)
     },
@@ -54,12 +37,15 @@ export const playerSlice = createSlice({
     },
     setEditPlayer:(state,action)=>{
       state.editPlayer=action.payload
+    },
+    setSortOrder:(state,action)=>{
+      state.sortOrder=action.payload
     }
   },
  
 })
 
 // Action creators are generated for each case reducer function
-export const {  addPlayer, setPlayerData, setEditPlayer } = playerSlice.actions
+export const {  addPlayer, setPlayerData, setEditPlayer,setSortOrder } = playerSlice.actions
 
 export default playerSlice.reducer

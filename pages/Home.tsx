@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View,Image,TouchableOpacity,FlatList,Alert} from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { setEditPlayer, setPlayerData } from '../redux/slices/playerSlice';
@@ -8,9 +8,8 @@ import EditPlayer from './EditPlayer';
 
 
 export default function Home({navigation}) {
-
+  const {playerData,sortOrder}= useSelector(state=>state.playerState)
   const dispatch=useDispatch()
-  const {playerData}= useSelector(state=>state.playerState)
   
 
   const getData = async () => {
@@ -30,13 +29,13 @@ export default function Home({navigation}) {
 
   },[])
 
- async function handleDelete(id){
+ async function handleDelete(item){
     const jsonValue = await AsyncStorage.getItem('myData');
     const data= jsonValue != null ? JSON.parse(jsonValue) : null;
-    const filt=data.filter(it=>it.id!==id)
+    const filt=data.filter(it=>it.id!==item.id)
     Alert.alert(
       'Confirmation',
-      'Are you sure, you want to delete this player',
+      `Are you sure, you want to delete player ${item.name}`,
       [
         {
           text: 'Cancel',
@@ -56,6 +55,16 @@ export default function Home({navigation}) {
    
   }
 
+  function sortedData() {
+    console.log(sortOrder);
+    if (sortOrder =='score' || sortOrder == 'id') {
+        return [...playerData].sort((a, b) => parseFloat(a[sortOrder]) - parseFloat(b[sortOrder]));
+    } else {
+        return [...playerData].sort((a, b) => a[sortOrder].localeCompare(b[sortOrder]));
+    }
+}
+
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={[styles.buttonstyle]} onPress={() => navigation.navigate('AddPlayer')}>
@@ -65,25 +74,25 @@ export default function Home({navigation}) {
       <View style={{marginTop:10,}}>
     {playerData.length>0?
         <FlatList
-        data={playerData}
+        data={sortedData()}
         renderItem={({item,index})=>(
-          <View key={index} style={{backgroundColor:'white',marginVertical:4,padding:5}}>
-          <Text style={{color:'black'}}>Id- {item?.id}</Text>
-          <Text>{item?.name}</Text>
-          <Text>{item?.country}</Text>
+          <View key={index} style={{backgroundColor:'lightgray',borderRadius:6,marginVertical:4,padding:5}}>
+          <Text style={{color:'black',fontWeight:'500'}}>Id: {item?.id}</Text>
+          <Text style={{color:'black',fontWeight:'500'}}>Name: {item?.name}</Text>
+          <Text style={{color:'black',fontWeight:'500'}}>Country: {item?.country}</Text>
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
 
-          <Text>{item?.score}</Text>
+          <Text style={{color:'black',fontWeight:'500'}}>Score: {item?.score}</Text>
           <View style={{flexDirection:'row',gap:10}}>
             <TouchableOpacity onPress={()=>{
               dispatch(setEditPlayer(item))
               navigation.navigate('EditPlayer')
             }}>
-            <Text>edit</Text>
+            <Text style={{color:'purple'}}>edit</Text>
             </TouchableOpacity >
 
-            <TouchableOpacity onPress={()=>handleDelete(item.id)}>
-            <Text>delete</Text>
+            <TouchableOpacity onPress={()=>handleDelete(item)}>
+            <Text style={{color:'red'}}>delete</Text>
 
             </TouchableOpacity>
           </View>
@@ -119,7 +128,7 @@ const styles = StyleSheet.create({
       borderRadius: 6,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#CBCBCB',
+      backgroundColor: '#6C25FF',
       marginTop: 14
   },
 

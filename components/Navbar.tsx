@@ -1,11 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { Dropdown } from 'react-native-element-dropdown';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSortOrder } from '../redux/slices/playerSlice';
 const data = [
-    { label: 'Item 1', value: '1' },
-    { label: 'Item 2', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
+    { label: 'id', value: 'id' },
+    { label: 'name', value: 'name' },
+    { label: 'country', value: 'country' },
+    { label: 'score', value: 'score' },
+
     
   ];
 
@@ -13,14 +16,17 @@ export default function Navbar() {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
+    const dispatch=useDispatch()
+    const {playerData,editPlayer}= useSelector(state=>state.playerState)
+
 
   return (
-    <View style={{flexDirection:'row',justifyContent:'space-between',backgroundColor:'pink',padding:10}}>
-      <Text>Player List </Text>
+    <View style={{flexDirection:'row',justifyContent:'space-between',backgroundColor:'lightgray',padding:10,alignItems:'center'}}>
+      <Text style={{color:'#6C25FF',fontSize:18}}>Player List </Text>
      <View>
       
         <Dropdown
-          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+          style={[styles.dropdown, isFocus && { borderColor: 'black' }]}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
@@ -36,6 +42,7 @@ export default function Navbar() {
           onBlur={() => setIsFocus(false)}
           onChange={item => {
             setValue(item.value);
+            dispatch(setSortOrder(item.value))
             setIsFocus(false);
           }}
           renderLeftIcon={() => (
@@ -52,7 +59,7 @@ const styles = StyleSheet.create({
  
       dropdown: {
         height: 30,
-        borderColor: 'gray',
+        borderColor: '#6C25FF',
         borderWidth:1,
         paddingHorizontal: 4,
       },

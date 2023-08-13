@@ -126,8 +126,8 @@ export default function AddPlayer({ navigation }: { navigation: any }) {
                 <Text style={{ fontSize: 16, color: 'white', fontFamily: 'Rubik-Medium' }}>Save Data</Text>
 
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.buttonstyle]} onPress={() => navigation.navigate('Home')}>
-                <Text style={{ fontSize: 16, color: 'white', fontFamily: 'Rubik-Medium' }}>Cancel</Text>
+            <TouchableOpacity style={[styles.buttonstyle,{backgroundColor:'#6C25FF4B',marginTop:10}]} onPress={() => navigation.navigate('Home')}>
+                <Text style={{ fontSize: 16, color: 'black', fontFamily: 'Rubik-Medium' }}>Cancel</Text>
 
             </TouchableOpacity>
 

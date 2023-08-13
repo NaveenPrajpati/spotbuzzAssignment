@@ -61,8 +61,8 @@ export default function EditPlayer({ navigation }) {
 
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.buttonstyle]} onPress={() => navigation.navigate('Home')}>
-                <Text style={{ fontSize: 16, color: 'white', fontFamily: 'Rubik-Medium' }}>Cancel</Text>
+            <TouchableOpacity style={[styles.buttonstyle,{backgroundColor:'#6C25FF4B'}]} onPress={() => navigation.navigate('Home')}>
+                <Text style={{ fontSize: 16, color: 'black', fontFamily: 'Rubik-Medium' }}>Cancel</Text>
 
             </TouchableOpacity>
 
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#CBCBCB',
+        backgroundColor: '#6C25FF',
         marginTop: 14
     },
  
