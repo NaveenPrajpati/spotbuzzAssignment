@@ -29,10 +29,10 @@ export default function Home({navigation}) {
 
   },[])
 
- async function handleDelete(item){
+ async function handleDelete(item: { id: any; name: any; }){
     const jsonValue = await AsyncStorage.getItem('myData');
     const data= jsonValue != null ? JSON.parse(jsonValue) : null;
-    const filt=data.filter(it=>it.id!==item.id)
+    const filt=data.filter((it: { id: any; })=>it.id!==item.id)
     Alert.alert(
       'Confirmation',
       `Are you sure, you want to delete player ${item.name}`,
