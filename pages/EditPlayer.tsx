@@ -44,7 +44,7 @@ export default function EditPlayer({ navigation }) {
 
             <View style={[styles.textinputbox,{marginTop: 24}]}>
                 <Text style={styles.textinputboxtext}>Name</Text>
-                <TextInput value={Name} onChangeText={(text)=>setName(text)} autoCapitalize='characters'  style={{ borderWidth: 1, borderRadius: 6, borderColor: 'lightgray', height: 40 }}></TextInput>
+                <TextInput value={Name} onChangeText={(text)=>setName(text)} autoCapitalize='characters'  style={{ borderWidth: 1, borderRadius: 6, borderColor: 'lightgray', height: 40,color:'black' }}></TextInput>
             </View>
 
             <View style={ styles.textinputbox}>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         color: '#6C25FF', fontSize: 13, fontFamily: 'Rubik-Regular', fontWeight: '600', lineHeight: 17, top: 2
     },
     textinputStyle: {
-        borderWidth: 1, borderRadius: 6, borderColor: 'lightgray' 
+        borderWidth: 1, borderRadius: 6, borderColor: 'lightgray',color:'black' 
     },
     buttonstyle: {
         height: 46,

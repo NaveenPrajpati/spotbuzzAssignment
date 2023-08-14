@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     },
     textinputStyle: {
         borderWidth: 1, borderRadius: 6, borderColor: 'lightgray', height: 40,
+        color:'black'
     },
 
  

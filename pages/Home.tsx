@@ -72,7 +72,7 @@ export default function Home({navigation}) {
 
             </TouchableOpacity>
       <View style={{marginTop:10,}}>
-    {playerData.length>0?
+    {playerData?.length>0?
         <FlatList
         data={sortedData()}
         renderItem={({item,index})=>(
